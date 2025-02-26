@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400, user-scalable=no">
+    <title>雞肉飯天天吃 - 小朋友學寫字</title>
+    <style>
+    :root {
+        --primary-color: #333333;
+        --secondary-color: #4a4a4a;
+        --text-color: #ffffff;
+        --border-color: #555555;
+        --hover-color: #666666;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --button-orange: #ff9c33;
+        --button-blue: #33b5e5;
+        --button-grey: #333333;
+    }
+    
+    html, body {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        position: relative;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        padding: 0 3px;
+        background-color: #333333;
+        color: var(--text-color);
+        font-family: "Microsoft JhengHei", Arial, sans-serif;
+        box-sizing: border-box;
+    }
+    
+    h1 {
+        color: var(--text-color);
+        font-size: 22px;
+        margin-bottom: 0px;
+        border-bottom: 2px solid var(--button-orange);
+        padding-bottom: 5px;
+        position: relative;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    
+    h1:hover {
+        transform: translateY(-2px);
+        text-shadow: 0 2px 4px rgba(255, 156, 51, 0.3);
+    }
+    
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--button-orange);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.6s ease-out;
+    }
+    
+    h1:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+    
+    h2 {
+        color: var(--text-color);
+        font-size: 18px;
+        margin-bottom: 10px;
+        margin-top: 15px;
+    }
+    
+    .row {
+        margin: 4px 0;
+        display: flex;
+        align-items: center;
+        background: var(--secondary-color);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        transform-origin: left;
+        will-change: transform;
+    }
+    
+    .row:hover {
+        transform: translateX(5px);
+        box-shadow: 0 6px 12px var(--shadow-color);
+    }
+    
+    .row:hover::before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 50%;
+        width: 3px;
+        height: 0;
+        background: var(--button-orange);
+        animation: expandHeight 0.3s forwards;
+    }
+    
+    @keyframes expandHeight {
+        to {
+            height: 100%;
+            top: 0;
+        }
+    }
+    
+    .label {
+        width: 120px;
+        margin-right: 15px;
+        text-align: right;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 0;
+        background-color: #222222;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+    
+    input:focus {
+        outline: none;
+        border-color: var(--button-orange);
+        box-shadow: 0 0 0 3px rgba(255, 156, 51, 0.2);
+        transform: scale(1.02);
+    }
+    
+    .result {
+        background-color: #222222;
+        color: var(--text-color);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        margin-top: 8px;
+        min-height: 60px;
+        font-size: 18px;
+        position: relative;
+        overflow: hidden;
+        animation: breathe 4s ease-in-out infinite;
+    }
+    
+    @keyframes breathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    
+    .result::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--button-orange), transparent);
+        animation: timelineSlide 3s linear infinite;
+    }
+    
+    @keyframes timelineSlide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    .container {
+        background-color: var(--secondary-color);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+    
+    .result-group {
+        margin-bottom: 15px;
+    }
+    
+    .result-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--button-orange);
+    }
+    
+    .calculator-keyboard {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .keyboard-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .calc-btn {
+        flex: 1;
+        margin: 0 5px;
+        padding: 14px 0;
+        font-size: 20px;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+    }
+    
+    .calc-btn:hover {
+        background-color: var(--button-orange);
+        color: var(--text-color);
+        border-color: var(--button-orange);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .calc-btn:active {
+        transform: scale(0.95) translateY(1px);
+        transition: transform 0.1s;
+    }
+    
+    .calc-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+        transition: width 0.3s ease-out, height 0.3s ease-out;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+    }
+    
+    .calc-btn:active::after {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .clear-btn {
+        background-color: var(--button-blue);
+        color: white;
+    }
+    
+    .clear-btn:hover {
+        background-color: #2980b9;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 15px 0;
+        background: var(--primary-color);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+    
+    table tr {
+        background: var(--secondary-color);
+        transition: background-color 0.3s ease;
+    }
+    
+    table tr:hover {
+        background: var(--hover-color);
+    }
+    
+    table th, table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-size: 18px;
+        line-height: 1.3;
+        text-align: center;
+    }
+    
+    table th {
+        background-color: var(--primary-color);
+        font-weight: bold;
+        color: var(--button-orange);
+        text-align: center;
+    }
+    
+    table td:first-child {
+        color: var(--button-orange);
+        font-weight: 700;
+        text-align: center;
+    }
+    
+    .divider-flow {
+        position: relative;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            var(--secondary-color) 0%,
+            var(--button-orange) 50%,
+            var(--secondary-color) 100%);
+        margin: 15px 0;
+        overflow: hidden;
+    }
+    
+    .divider-flow::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 156, 51, 0.8),
+            transparent);
+        animation: flowLight 3s ease-in-out infinite;
+    }
+    
+    @keyframes flowLight {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(200%); }
+    }
+    
+    .footer-message {
+        background-color: #333333;
+        color: var(--text-color);
+        padding: 15px;
+        text-align: center;
+        margin-top: 15px;
+        border-radius: 4px;
+        transform: scale(1.05);
+        text-shadow: 0 0 10px var(--button-orange);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .footer-message::before {
+        content: '🍚';
+        margin-right: 8px;
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+    
+    .footer-message:hover::before {
+        transform: rotate(360deg);
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .value-changed {
+        animation: valueChange 0.5s ease-out;
+        will-change: background-color;
+    }
+    
+    @keyframes valueChange {
+        0% { 
+            background-color: rgba(255, 156, 51, 0.2);
+            transform: scale(1.02);
+        }
+        100% { 
+            background-color: transparent;
+            transform: scale(1);
+        }
+    }
+
+    /* 新增樣式 */
+    .info-section {
+        margin-top: 15px;
+        animation: fadeIn 0.8s ease-out;
+    }
+    </style>
+</head>
+<body>
+    <h1>小朋友學寫字</h1>
+    
+    <div class="container" style="animation: fadeIn 0.5s ease-out; margin-top: 15px;">
+        <div style="padding: 5px 10px;">
+            <div class="result-group">
+                <label style="display: block; margin-bottom: 8px; color: var(--button-orange); font-weight: bold;">阿拉伯數字 新台幣 (TWD)</label>
+                <input type="tel" id="arabicNumber" placeholder="請輸入金額" oninput="updateResults()" inputmode="numeric" autocomplete="off">
+            </div>
+            
+            <div class="result-group">
+                <label>繁體中文</label>
+                <div class="result" id="traditionalResult"></div>
+            </div>
+            
+            <div class="result-group">
+                <label>大寫金額</label>
+                <div class="result" id="financialResult"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 style="color: var(--button-orange); margin-top: 0; text-align: center;">數字鍵盤</h2>
+        <div class="calculator-keyboard">
+            <div class="keyboard-row">
+                <button class="calc-btn" onclick="appendNumber(7)">7</button>
+                <button class="calc-btn" onclick="appendNumber(8)">8</button>
+                <button class="calc-btn" onclick="appendNumber(9)">9</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn" onclick="appendNumber(4)">4</button>
+                <button class="calc-btn" onclick="appendNumber(5)">5</button>
+                <button class="calc-btn" onclick="appendNumber(6)">6</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn" onclick="appendNumber(1)">1</button>
+                <button class="calc-btn" onclick="appendNumber(2)">2</button>
+                <button class="calc-btn" onclick="appendNumber(3)">3</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn clear-btn" onclick="clearInput()">清除</button>
+                <button class="calc-btn" onclick="appendNumber(0)">0</button>
+                <button class="calc-btn" onclick="backspace()">退回</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider-flow"></div>
+    
+    <div class="container info-section">
+        <h2 style="color: var(--button-orange); margin-top: 0; text-align: center;">中文數字與大寫金額對應表</h2>
+        
+        <table>
+            <tr>
+                <th>中文數字</th>
+                <th>大寫金額</th>
+            </tr>
+            <tr>
+                <td>零</td>
+                <td>零</td>
+            </tr>
+            <tr>
+                <td>一</td>
+                <td>壹</td>
+            </tr>
+            <tr>
+                <td>二</td>
+                <td>貳</td>
+            </tr>
+            <tr>
+                <td>三</td>
+                <td>參</td>
+            </tr>
+            <tr>
+                <td>四</td>
+                <td>肆</td>
+            </tr>
+            <tr>
+                <td>五</td>
+                <td>伍</td>
+            </tr>
+            <tr>
+                <td>六</td>
+                <td>陸</td>
+            </tr>
+            <tr>
+                <td>七</td>
+                <td>柒</td>
+            </tr>
+            <tr>
+                <td>八</td>
+                <td>捌</td>
+            </tr>
+            <tr>
+                <td>九</td>
+                <td>玖</td>
+            </tr>
+            <tr>
+                <td>十</td>
+                <td>拾</td>
+            </tr>
+            <tr>
+                <td>百</td>
+                <td>佰</td>
+            </tr>
+            <tr>
+                <td>千</td>
+                <td>仟</td>
+            </tr>
+            <tr>
+                <td>萬</td>
+                <td>萬</td>
+            </tr>
+            <tr>
+                <td>億</td>
+                <td>億</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="footer-message">雞肉飯天天吃</div>
+
+    <script>
+        // 阿拉伯數字轉中文數字並同時更新兩種格式的結果
+        function updateResults() {
+            const arabicNumber = document.getElementById('arabicNumber').value.trim();
+            
+            // 清空結果，如果沒有輸入
+            if (!arabicNumber) {
+                document.getElementById('traditionalResult').textContent = '請輸入阿拉伯數字';
+                document.getElementById('financialResult').textContent = '請輸入阿拉伯數字';
+                return;
+            }
+            
+            try {
+                // 檢查輸入是否為有效的正整數
+                if (!/^\d+$/.test(arabicNumber)) {
+                    document.getElementById('traditionalResult').textContent = '請輸入正整數';
+                    document.getElementById('financialResult').textContent = '請輸入正整數';
+                    return;
+                }
+                
+                // 轉換為繁體中文
+                let traditionalResult = arabicToChineseNumber(arabicNumber, 'traditional');
+                traditionalResult += ' 新台幣';
+                
+                // 添加值變化動畫
+                const traditionalElement = document.getElementById('traditionalResult');
+                traditionalElement.classList.remove('value-changed');
+                void traditionalElement.offsetWidth; // 觸發重繪
+                traditionalElement.classList.add('value-changed');
+                traditionalElement.textContent = traditionalResult;
+                
+                // 轉換為大寫金額
+                let financialResult = arabicToChineseNumber(arabicNumber, 'financial');
+                financialResult += ' 圓整';
+                
+                // 添加值變化動畫
+                const financialElement = document.getElementById('financialResult');
+                financialElement.classList.remove('value-changed');
+                void financialElement.offsetWidth; // 觸發重繪
+                financialElement.classList.add('value-changed');
+                financialElement.textContent = financialResult;
+                
+                // 添加觸覺反饋（如果設備支持）
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(50);
+                }
+            } catch (error) {
+                document.getElementById('traditionalResult').textContent = '轉換錯誤: ' + error.message;
+                document.getElementById('financialResult').textContent = '轉換錯誤: ' + error.message;
+            }
+        }
+        
+        // 阿拉伯數字轉中文數字的具體實現
+        function arabicToChineseNumber(num, format) {
+            // 分割整數和小數部分
+            const parts = num.split('.');
+            const integerPart = parts[0];
+            const decimalPart = parts.length > 1 ? parts[1] : '';
+            
+            // 根據格式選擇對應的字符
+            let digits, units;
+            if (format === 'traditional') {
+                digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+                units = ['', '十', '百', '千', '萬', '十', '百', '千', '億', '十', '百', '千', '兆'];
+            } else if (format === 'financial') {
+                digits = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖'];
+                units = ['', '拾', '佰', '仟', '萬', '拾', '佰', '仟', '億', '拾', '佰', '仟', '兆'];
+            }
+            
+            // 處理整數部分
+            let intResult = '';
+            if (integerPart === '0') {
+                intResult = digits[0];
+            } else {
+                const len = integerPart.length;
+                
+                // 特殊處理10-19的數字
+                if (format !== 'financial' && len === 2 && integerPart.charAt(0) === '1') {
+                    intResult = units[1];
+                    if (integerPart.charAt(1) !== '0') {
+                        intResult += digits[parseInt(integerPart.charAt(1))];
+                    }
+                } else {
+                    for (let i = 0; i < len; i++) {
+                        const digit = parseInt(integerPart.charAt(i));
+                        const pos = len - i - 1;
+                        
+                        if (digit !== 0) {
+                            // 非零數字直接轉換並加上單位
+                            intResult += digits[digit] + units[pos];
+                        } else {
+                            // 處理零的特殊規則
+                            if (i < len - 1 && integerPart.charAt(i + 1) !== '0') {
+                                // 當前數字是0，但下一個不是0，加上零
+                                intResult += digits[0];
+                            } else if (pos === 4 || pos === 8) {
+                                // 萬位或億位的0，仍然需要加上單位
+                                if (intResult.length > 0 && !intResult.endsWith(units[4]) && !intResult.endsWith(units[8])) {
+                                    intResult += units[pos];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 處理小數部分
+            let decResult = '';
+            if (decimalPart) {
+                if (format === 'financial') {
+                    decResult = '點';
+                    for (let i = 0; i < decimalPart.length; i++) {
+                        decResult += digits[parseInt(decimalPart.charAt(i))];
+                    }
+                } else {
+                    decResult = '點';
+                    for (let i = 0; i < decimalPart.length; i++) {
+                        decResult += digits[parseInt(decimalPart.charAt(i))];
+                    }
+                }
+            }
+            
+            // 組合結果
+            let result = intResult + decResult;
+            
+            return result;
+        }
+        
+        // 添加數字到輸入框
+        function appendNumber(num) {
+            const inputField = document.getElementById('arabicNumber');
+            const currentValue = inputField.value;
+            
+            // 只允許輸入正整數
+            if (isNaN(num)) {
+                return;
+            }
+            
+            inputField.value = currentValue + num;
+            updateResults();
+            
+            // 給予觸覺反饋（如果設備支持）
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+        }
+        
+        // 清除輸入框內容
+        function clearInput() {
+            document.getElementById('arabicNumber').value = '';
+            updateResults();
+            
+            // 給予觸覺反饋（如果設備支持）
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate([50, 50, 50]);
+            }
+        }
+        
+        // 刪除最後一個輸入的數字
+        function backspace() {
+            const inputField = document.getElementById('arabicNumber');
+            inputField.value = inputField.value.slice(0, -1);
+            updateResults();
+            
+            // 給予觸覺反饋（如果設備支持）
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(70);
+            }
+        }
+        
+        // 防止在iOS上雙擊縮放
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 防止縮放
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault();
+        });
+        
+        // 頁面載入時執行
+        window.onload = function() {
+            // 初始化結果顯示
+            updateResults();
+            
+            // 自動聚焦到輸入框但不顯示虛擬鍵盤
+            document.getElementById('arabicNumber').focus();
+            document.getElementById('arabicNumber').blur();
+            
+            // 添加動畫效果
+            document.querySelectorAll('.container').forEach((container, index) => {
+                container.style.animationDelay = (index * 0.1) + 's';
+            });
+        };
+    </script>
+</body>
+</html>
