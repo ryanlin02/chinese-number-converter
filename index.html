@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=400, user-scalable=no">
     <title>小朋友學寫字</title>
+
+    <!-- PWA相關標籤 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#333333">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="小朋友學寫字">
+
+    <!-- iOS圖標支持 -->
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+
+    <!-- Safari啟動畫面 -->
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash-1125x2436.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash-828x1792.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash-1242x2688.png">
+
     <style>
     :root {
         --primary-color: #333333;
@@ -782,5 +800,123 @@
             });
         };
     </script>
+
+    <script>
+    // 註冊Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker註冊成功：', registration.scope);
+                })
+                .catch((error) => {
+                    console.log('Service Worker註冊失敗：', error);
+                });
+        });
+
+        // 檢查更新
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                window.location.reload();
+                refreshing = true;
+            }
+        });
+    }
+
+    // 添加PWA安裝提示
+    let deferredPrompt;
+    const installButton = document.createElement('button');
+    installButton.style.display = 'none';
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // 阻止Chrome自動顯示安裝提示
+        e.preventDefault();
+        // 儲存事件，以便稍後觸發
+        deferredPrompt = e;
+        
+        // 顯示自定義的安裝按鈕
+        if (!isInStandaloneMode()) {
+            showInstallPromotion();
+        }
+    });
+
+    // 判斷是否已經以PWA模式運行
+    function isInStandaloneMode() {
+        return (window.matchMedia('(display-mode: standalone)').matches) || 
+            (window.navigator.standalone) || 
+            document.referrer.includes('android-app://');
+    }
+
+    // 顯示安裝提示
+    function showInstallPromotion() {
+        // 創建提示元素
+        const installPrompt = document.createElement('div');
+        installPrompt.style.position = 'fixed';
+        installPrompt.style.bottom = '20px';
+        installPrompt.style.left = '50%';
+        installPrompt.style.transform = 'translateX(-50%)';
+        installPrompt.style.width = '90%';
+        installPrompt.style.maxWidth = '400px';
+        installPrompt.style.backgroundColor = '#ff9c33';
+        installPrompt.style.color = 'white';
+        installPrompt.style.padding = '10px 15px';
+        installPrompt.style.borderRadius = '8px';
+        installPrompt.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        installPrompt.style.zIndex = '9999';
+        installPrompt.style.display = 'flex';
+        installPrompt.style.flexDirection = 'column';
+        installPrompt.style.alignItems = 'center';
+        installPrompt.style.justifyContent = 'space-between';
+        installPrompt.style.textAlign = 'center';
+        
+        installPrompt.innerHTML = `
+            <div style="margin-bottom: 10px;">將「小朋友學寫字」新增至主畫面，方便隨時使用！</div>
+            <div style="display: flex; width: 100%; justify-content: space-between;">
+                <button id="install-later" style="border: none; background: transparent; color: white; padding: 5px 10px;">稍後</button>
+                <button id="install-now" style="border: none; background: white; color: #ff9c33; font-weight: bold; padding: 8px 15px; border-radius: 20px;">立即新增</button>
+            </div>
+        `;
+        
+        document.body.appendChild(installPrompt);
+        
+        // 綁定按鈕事件
+        document.getElementById('install-now').addEventListener('click', () => {
+            // 隱藏安裝提示
+            installPrompt.style.display = 'none';
+            
+            // 觸發安裝提示
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('用戶已同意安裝 PWA');
+                    } else {
+                        console.log('用戶拒絕安裝 PWA');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+        
+        document.getElementById('install-later').addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+            
+            // 7天後再次顯示
+            localStorage.setItem('installPromptDismissed', Date.now().toString());
+        });
+        
+        // 檢查是否應該顯示提示
+        const lastDismissed = localStorage.getItem('installPromptDismissed');
+        if (lastDismissed) {
+            const daysSinceDismissed = (Date.now() - parseInt(lastDismissed)) / (1000 * 60 * 60 * 24);
+            if (daysSinceDismissed < 7) {
+                installPrompt.style.display = 'none';
+            }
+        }
+    }
+    </script>
+
 </body>
 </html>
