@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=400, user-scalable=no">
-    <title>雞肉飯天天吃 - 小朋友學寫字</title>
+    <title>小朋友學寫字</title>
     <style>
     :root {
         --primary-color: #333333;
@@ -29,6 +29,8 @@
         color: var(--text-color);
         font-family: "Microsoft JhengHei", Arial, sans-serif;
         box-sizing: border-box;
+        overscroll-behavior-y: auto;
+        touch-action: pan-y;
     }
     
     h1 {
@@ -68,16 +70,16 @@
     h2 {
         color: var(--text-color);
         font-size: 18px;
-        margin-bottom: 10px;
-        margin-top: 15px;
+        margin-bottom: 8px;
+        margin-top: 10px;
     }
     
     .row {
-        margin: 4px 0;
+        margin: 3px 0;
         display: flex;
         align-items: center;
         background: var(--secondary-color);
-        padding: 8px;
+        padding: 6px;
         border-radius: 8px;
         box-shadow: 0 4px 8px var(--shadow-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -119,14 +121,18 @@
     
     input {
         width: 100%;
-        padding: 12px;
+        padding: 8px;
         margin-bottom: 0;
         background-color: #222222;
         color: var(--text-color);
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        font-size: 18px;
+        font-size: 16px;
         transition: all 0.3s ease;
+        box-sizing: border-box;
+        touch-action: manipulation;
+        height: 40px;
+        text-align: right;
     }
     
     input:focus {
@@ -136,23 +142,30 @@
         transform: scale(1.02);
     }
     
-    .result {
-        background-color: #222222;
-        color: var(--text-color);
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        margin-top: 8px;
-        min-height: 60px;
-        font-size: 18px;
-        position: relative;
-        overflow: hidden;
-        animation: breathe 4s ease-in-out infinite;
+    input[readonly] {
+        background-color: #1a1a1a;
+        color: #dddddd;
+        border-color: #444444;
+        cursor: default;
     }
     
-    @keyframes breathe {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.8; }
+    .result {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 0;
+        background-color: #222222;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 16px;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        min-height: 40px; /* 降低高度與輸入框保持一致 */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* 文字右對齊 */
+        text-align: right;
     }
     
     .result::before {
@@ -174,12 +187,14 @@
     .container {
         background-color: var(--secondary-color);
         border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 15px;
+        padding: 12px;
+        margin-bottom: 12px;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .container:hover {
@@ -188,31 +203,54 @@
     }
     
     .result-group {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+        width: 100%;
     }
     
     .result-group label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         font-weight: bold;
         color: var(--button-orange);
     }
     
+    /* 水平布局的結果組 */
+    .result-group-horizontal {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    .result-group-horizontal label {
+        width: 60px;
+        margin-right: 10px;
+        margin-bottom: 0;
+        font-weight: bold;
+        color: var(--button-orange);
+        flex-shrink: 0;
+    }
+    
+    .result-group-horizontal input {
+        flex-grow: 1;
+    }
+    
     .calculator-keyboard {
         width: 100%;
-        margin: 10px 0;
+        margin: 8px 0;
+        touch-action: manipulation;
     }
     
     .keyboard-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     .calc-btn {
         flex: 1;
         margin: 0 5px;
-        padding: 14px 0;
+        padding: 12px 0;
         font-size: 20px;
         background-color: var(--secondary-color);
         color: var(--text-color);
@@ -225,6 +263,7 @@
         will-change: transform, opacity;
         backface-visibility: hidden;
         transform: translateZ(0);
+        touch-action: manipulation;
     }
     
     .calc-btn:hover {
@@ -267,48 +306,6 @@
         background-color: #2980b9;
     }
     
-    table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin: 15px 0;
-        background: var(--primary-color);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    }
-    
-    table tr {
-        background: var(--secondary-color);
-        transition: background-color 0.3s ease;
-    }
-    
-    table tr:hover {
-        background: var(--hover-color);
-    }
-    
-    table th, table td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-color);
-        font-size: 18px;
-        line-height: 1.3;
-        text-align: center;
-    }
-    
-    table th {
-        background-color: var(--primary-color);
-        font-weight: bold;
-        color: var(--button-orange);
-        text-align: center;
-    }
-    
-    table td:first-child {
-        color: var(--button-orange);
-        font-weight: 700;
-        text-align: center;
-    }
-    
     .divider-flow {
         position: relative;
         height: 2px;
@@ -316,7 +313,7 @@
             var(--secondary-color) 0%,
             var(--button-orange) 50%,
             var(--secondary-color) 100%);
-        margin: 15px 0;
+        margin: 12px 0;
         overflow: hidden;
     }
     
@@ -342,9 +339,9 @@
     .footer-message {
         background-color: #333333;
         color: var(--text-color);
-        padding: 15px;
+        padding: 12px;
         text-align: center;
-        margin-top: 15px;
+        margin-top: 12px;
         border-radius: 4px;
         transform: scale(1.05);
         text-shadow: 0 0 10px var(--button-orange);
@@ -374,53 +371,104 @@
         to { opacity: 1; transform: translateY(0); }
     }
     
-    .value-changed {
-        animation: valueChange 0.5s ease-out;
-        will-change: background-color;
+    .content-wrapper {
+        width: 100%;
+        padding: 3px 8px;
+        box-sizing: border-box;
     }
     
-    @keyframes valueChange {
-        0% { 
-            background-color: rgba(255, 156, 51, 0.2);
-            transform: scale(1.02);
-        }
-        100% { 
-            background-color: transparent;
-            transform: scale(1);
-        }
+    /* 數字對照表樣式 */
+    .number-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 12px 5px;
+        width: calc(100% - 10px);
     }
-
-    /* 新增樣式 */
-    .info-section {
-        margin-top: 15px;
-        animation: fadeIn 0.8s ease-out;
+    
+    .number-pair {
+        background: var(--secondary-color);
+        border-radius: 10px;
+        padding: 8px 5px;
+        text-align: center;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .number-pair:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px var(--shadow-color);
+        background: var(--hover-color);
+    }
+    
+    .chinese-number {
+        color: var(--button-orange);
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+    
+    .financial-number {
+        color: var(--text-color);
+        font-size: 22px;
+    }
+    
+    .number-header {
+        grid-column: span 3;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+    
+    .header-item {
+        flex: 1;
+        text-align: center;
+        color: var(--button-orange);
+        font-weight: bold;
+        font-size: 16px;
     }
     </style>
 </head>
 <body>
     <h1>小朋友學寫字</h1>
     
-    <div class="container" style="animation: fadeIn 0.5s ease-out; margin-top: 15px;">
-        <div style="padding: 5px 10px;">
-            <div class="result-group">
-                <label style="display: block; margin-bottom: 8px; color: var(--button-orange); font-weight: bold;">阿拉伯數字 新台幣 (TWD)</label>
+    <div class="container" style="animation: fadeIn 0.5s ease-out; margin-top: 12px;">
+        <div class="content-wrapper">
+            <div class="result-group-horizontal">
+                <label style="color: var(--button-orange); font-weight: bold;">總金額</label>
                 <input type="tel" id="arabicNumber" placeholder="請輸入金額" oninput="updateResults()" inputmode="numeric" autocomplete="off">
             </div>
             
-            <div class="result-group">
-                <label>繁體中文</label>
+            <!-- 水平排列的未稅欄位 -->
+            <div class="result-group-horizontal">
+                <label>未稅</label>
+                <div class="result" id="preTaxAmount"></div>
+            </div>
+            
+            <!-- 水平排列的稅金欄位 -->
+            <div class="result-group-horizontal">
+                <label>稅金</label>
+                <div class="result" id="taxAmount"></div>
+            </div>
+            
+            <div class="result-group-horizontal">
+                <label>中文</label>
                 <div class="result" id="traditionalResult"></div>
             </div>
             
-            <div class="result-group">
-                <label>大寫金額</label>
+            <div class="result-group-horizontal">
+                <label>大寫</label>
                 <div class="result" id="financialResult"></div>
             </div>
         </div>
     </div>
     
     <div class="container">
-        <h2 style="color: var(--button-orange); margin-top: 0; text-align: center;">數字鍵盤</h2>
+        <!-- 移除了數字鍵盤標題 -->
         <div class="calculator-keyboard">
             <div class="keyboard-row">
                 <button class="calc-btn" onclick="appendNumber(7)">7</button>
@@ -447,75 +495,72 @@
     
     <div class="divider-flow"></div>
     
-    <div class="container info-section">
-        <h2 style="color: var(--button-orange); margin-top: 0; text-align: center;">中文數字與大寫金額對應表</h2>
+    <!-- 數字對照表 -->
+    <div class="number-grid">
+        <div class="number-pair">
+            <div class="chinese-number">零</div>
+            <div class="financial-number">零</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">一</div>
+            <div class="financial-number">壹</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">二</div>
+            <div class="financial-number">貳</div>
+        </div>
         
-        <table>
-            <tr>
-                <th>中文數字</th>
-                <th>大寫金額</th>
-            </tr>
-            <tr>
-                <td>零</td>
-                <td>零</td>
-            </tr>
-            <tr>
-                <td>一</td>
-                <td>壹</td>
-            </tr>
-            <tr>
-                <td>二</td>
-                <td>貳</td>
-            </tr>
-            <tr>
-                <td>三</td>
-                <td>參</td>
-            </tr>
-            <tr>
-                <td>四</td>
-                <td>肆</td>
-            </tr>
-            <tr>
-                <td>五</td>
-                <td>伍</td>
-            </tr>
-            <tr>
-                <td>六</td>
-                <td>陸</td>
-            </tr>
-            <tr>
-                <td>七</td>
-                <td>柒</td>
-            </tr>
-            <tr>
-                <td>八</td>
-                <td>捌</td>
-            </tr>
-            <tr>
-                <td>九</td>
-                <td>玖</td>
-            </tr>
-            <tr>
-                <td>十</td>
-                <td>拾</td>
-            </tr>
-            <tr>
-                <td>百</td>
-                <td>佰</td>
-            </tr>
-            <tr>
-                <td>千</td>
-                <td>仟</td>
-            </tr>
-            <tr>
-                <td>萬</td>
-                <td>萬</td>
-            </tr>
-            <tr>
-                <td>億</td>
-                <td>億</td>
-            </tr>
-        </table>
+        <div class="number-pair">
+            <div class="chinese-number">三</div>
+            <div class="financial-number">參</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">四</div>
+            <div class="financial-number">肆</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">五</div>
+            <div class="financial-number">伍</div>
+        </div>
+        
+        <div class="number-pair">
+            <div class="chinese-number">六</div>
+            <div class="financial-number">陸</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">七</div>
+            <div class="financial-number">柒</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">八</div>
+            <div class="financial-number">捌</div>
+        </div>
+        
+        <div class="number-pair">
+            <div class="chinese-number">九</div>
+            <div class="financial-number">玖</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">十</div>
+            <div class="financial-number">拾</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">百</div>
+            <div class="financial-number">佰</div>
+        </div>
+        
+        <div class="number-pair">
+            <div class="chinese-number">千</div>
+            <div class="financial-number">仟</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">萬</div>
+            <div class="financial-number">萬</div>
+        </div>
+        <div class="number-pair">
+            <div class="chinese-number">億</div>
+            <div class="financial-number">億</div>
+        </div>
     </div>
     
     <div class="footer-message">雞肉飯天天吃</div>
@@ -527,8 +572,10 @@
             
             // 清空結果，如果沒有輸入
             if (!arabicNumber) {
-                document.getElementById('traditionalResult').textContent = '請輸入阿拉伯數字';
-                document.getElementById('financialResult').textContent = '請輸入阿拉伯數字';
+                document.getElementById('traditionalResult').textContent = '';
+                document.getElementById('financialResult').textContent = '';
+                document.getElementById('preTaxAmount').textContent = '';
+                document.getElementById('taxAmount').textContent = '';
                 return;
             }
             
@@ -537,29 +584,34 @@
                 if (!/^\d+$/.test(arabicNumber)) {
                     document.getElementById('traditionalResult').textContent = '請輸入正整數';
                     document.getElementById('financialResult').textContent = '請輸入正整數';
+                    document.getElementById('preTaxAmount').textContent = '';
+                    document.getElementById('taxAmount').textContent = '';
                     return;
                 }
+                
+                // 計算未稅金額和稅金
+                const totalAmount = parseInt(arabicNumber);
+                const preTaxAmount = Math.round(totalAmount / 1.05);
+                const taxAmount = totalAmount - preTaxAmount;
+                
+                // 更新稅務相關欄位
+                document.getElementById('preTaxAmount').textContent = preTaxAmount;
+                document.getElementById('taxAmount').textContent = taxAmount;
                 
                 // 轉換為繁體中文
                 let traditionalResult = arabicToChineseNumber(arabicNumber, 'traditional');
                 traditionalResult += ' 新台幣';
                 
-                // 添加值變化動畫
+                // 更新內容
                 const traditionalElement = document.getElementById('traditionalResult');
-                traditionalElement.classList.remove('value-changed');
-                void traditionalElement.offsetWidth; // 觸發重繪
-                traditionalElement.classList.add('value-changed');
                 traditionalElement.textContent = traditionalResult;
                 
                 // 轉換為大寫金額
                 let financialResult = arabicToChineseNumber(arabicNumber, 'financial');
                 financialResult += ' 圓整';
                 
-                // 添加值變化動畫
+                // 更新內容
                 const financialElement = document.getElementById('financialResult');
-                financialElement.classList.remove('value-changed');
-                void financialElement.offsetWidth; // 觸發重繪
-                financialElement.classList.add('value-changed');
                 financialElement.textContent = financialResult;
                 
                 // 添加觸覺反饋（如果設備支持）
@@ -569,6 +621,8 @@
             } catch (error) {
                 document.getElementById('traditionalResult').textContent = '轉換錯誤: ' + error.message;
                 document.getElementById('financialResult').textContent = '轉換錯誤: ' + error.message;
+                document.getElementById('preTaxAmount').textContent = '';
+                document.getElementById('taxAmount').textContent = '';
             }
         }
         
@@ -690,15 +744,17 @@
             }
         }
         
-        // 防止在iOS上雙擊縮放
-        document.addEventListener('touchstart', function(event) {
-            if (event.touches.length > 1) {
-                event.preventDefault();
-            }
-        }, { passive: false });
-
-        // 防止縮放
-        document.addEventListener('gesturestart', function(event) {
+        // 針對按鈕元素單獨防止多點觸控，不阻止滾動
+        document.querySelectorAll('.calc-btn').forEach(button => {
+            button.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) {
+                    event.preventDefault();
+                }
+            }, { passive: true });
+        });
+        
+        // 只在計算機鍵盤區域防止縮放手勢
+        document.querySelector('.calculator-keyboard').addEventListener('gesturestart', function(event) {
             event.preventDefault();
         });
         
@@ -714,6 +770,13 @@
             // 添加動畫效果
             document.querySelectorAll('.container').forEach((container, index) => {
                 container.style.animationDelay = (index * 0.1) + 's';
+            });
+            
+            // 添加動畫效果到數字對
+            document.querySelectorAll('.number-pair').forEach((pair, index) => {
+                pair.style.animation = `fadeIn 0.3s ease-out forwards`;
+                pair.style.animationDelay = (index * 0.05) + 's';
+                pair.style.opacity = '0';
             });
         };
     </script>
