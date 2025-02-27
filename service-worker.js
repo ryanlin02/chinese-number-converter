@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chinese-number-converter-v0.19';
+const CACHE_NAME = 'chinese-number-converter-v0.36';
 const ASSETS_TO_CACHE = [
   '/chinese-number-converter/',
   '/chinese-number-converter/index.html',
