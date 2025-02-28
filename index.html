@@ -980,7 +980,7 @@
             }
         }
         
-        // 阿拉伯數字轉中文數字的實現
+        // 修改 arabicToChineseNumber 函數中處理零的邏輯
         function arabicToChineseNumber(num, format) {
             // 分割整數和小數部分
             const parts = num.split('.');
@@ -1011,23 +1011,34 @@
                         intResult += digits[parseInt(integerPart.charAt(1))];
                     }
                 } else {
+                    // 新增變量來追蹤上一個處理過的字符是否為零，以及是否已經添加了單位
+                    let lastWasZero = false;
+                    let hasAddedUnit = false;
+                    
                     for (let i = 0; i < len; i++) {
                         const digit = parseInt(integerPart.charAt(i));
                         const pos = len - i - 1;
                         
                         if (digit !== 0) {
                             // 非零數字直接轉換並加上單位
+                            lastWasZero = false;
+                            hasAddedUnit = false;
                             intResult += digits[digit] + units[pos];
                         } else {
                             // 處理零的特殊規則
-                            if (i < len - 1 && integerPart.charAt(i + 1) !== '0') {
-                                // 當前數字是0，但下一個不是0，加上零
-                                intResult += digits[0];
-                            } else if (pos === 4 || pos === 8) {
-                                // 萬位或億位的0，仍然需要加上單位
-                                if (intResult.length > 0 && !intResult.endsWith(units[4]) && !intResult.endsWith(units[8])) {
-                                    intResult += units[pos];
+                            if (pos === 4 || pos === 8) {
+                                // 萬位或億位的零，需要加上對應的單位，但不需要加上"零"字
+                                if (intResult.length > 0) {
+                                    // 確保沒有連續加入同一單位
+                                    if (!intResult.endsWith(units[4]) && !intResult.endsWith(units[8])) {
+                                        intResult += units[pos];
+                                        hasAddedUnit = true;
+                                    }
                                 }
+                            } else if (i < len - 1 && integerPart.charAt(i + 1) !== '0' && !lastWasZero) {
+                                // 當前數字是0，下一個不是0，且上一個不是0，加上零
+                                intResult += digits[0];
+                                lastWasZero = true;
                             }
                         }
                     }
