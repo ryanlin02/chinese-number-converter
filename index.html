@@ -1096,6 +1096,52 @@
             document.getElementById('arabicNumber').blur();
         };
 
+        // 在window.onload之後添加這段代碼
+        document.addEventListener('DOMContentLoaded', function() {
+            // 檢查是否為iOS設備
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // 如果是iOS設備且不是在standalone模式下
+            if (isIOS && !isInStandaloneMode() && !localStorage.getItem('installPromptDismissed')) {
+                // 為iOS設備顯示自定義安裝指南
+                showIOSInstallGuide();
+            }
+        });
+
+        function showIOSInstallGuide() {
+            const iosPrompt = document.createElement('div');
+            iosPrompt.id = 'ios-install-prompt';
+            iosPrompt.style.position = 'fixed';
+            iosPrompt.style.bottom = '20px';
+            iosPrompt.style.left = '50%';
+            iosPrompt.style.transform = 'translateX(-50%)';
+            iosPrompt.style.width = '90%';
+            iosPrompt.style.maxWidth = '400px';
+            iosPrompt.style.backgroundColor = '#ff9c33';
+            iosPrompt.style.color = 'white';
+            iosPrompt.style.padding = '10px 15px';
+            iosPrompt.style.borderRadius = '8px';
+            iosPrompt.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            iosPrompt.style.zIndex = '9999';
+            
+            iosPrompt.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="flex: 1;">
+                        <p style="margin: 5px 0;">新增到主畫面以便離線使用</p>
+                        <p style="margin: 5px 0; font-size: 12px;">點擊分享圖標，然後選擇「新增至主畫面」</p>
+                    </div>
+                    <button id="ios-close" style="background: none; border: none; color: white; font-size: 18px; padding: 5px;">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(iosPrompt);
+            
+            document.getElementById('ios-close').addEventListener('click', function() {
+                iosPrompt.style.display = 'none';
+                localStorage.setItem('installPromptDismissed', Date.now().toString());
+            });
+        }
+
         // 添加到現有的JavaScript代碼中
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.calc-btn');
@@ -1721,7 +1767,8 @@
                 if (daysSinceDismissed < 7) {
                     installPrompt.style.display = 'none';
                 }
-        }
+                
+            }
     }
     </script>
 
