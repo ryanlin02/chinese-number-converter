@@ -1,6 +1,6 @@
 {
-  "name": "小朋友學寫字",
-  "short_name": "學寫字",
+  "name": "小朋友開發票",
+  "short_name": "開發票",
   "description": "將阿拉伯數字轉換為中文數字和金額大寫的應用",
   "start_url": "/chinese-number-converter/",
   "display": "standalone",
