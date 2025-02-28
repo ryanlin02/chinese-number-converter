@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6ZSWBQJJW"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Y6ZSWBQJJW');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=400, user-scalable=no">
     <title>小朋友開發票</title>
@@ -881,6 +890,23 @@
 
     <script>
 
+        // 追蹤查看歷史記錄
+        function toggleHistoryPanel() {
+        const panel = document.getElementById('historyPanel');
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+        } else {
+            panel.style.display = 'block';
+            loadHistoryData();
+            
+            // 追蹤查看歷史記錄事件
+            gtag('event', 'view_history', {
+            'event_category': 'engagement',
+            'event_label': 'view'
+            });
+        }
+        }
+
         // 添加更新時間的函數
         function updateTime() {
             const now = new Date();
@@ -1105,6 +1131,18 @@
             // 自動聚焦到輸入框但不顯示虛擬鍵盤
             document.getElementById('arabicNumber').focus();
             document.getElementById('arabicNumber').blur();
+            
+            // 追蹤頁面載入性能
+            if (window.performance) {
+                const perfData = window.performance.timing;
+                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+                
+                gtag('event', 'page_load_time', {
+                    'event_category': 'performance',
+                    'event_label': 'load',
+                    'value': pageLoadTime
+                });
+            }
         };
 
         // 在window.onload之後添加這段代碼
@@ -1665,6 +1703,19 @@
             }, 800);
         }
 
+        // 追蹤使用者參與度（頁面停留時間）
+        let startTime = new Date().getTime();
+        window.addEventListener('beforeunload', () => {
+        const endTime = new Date().getTime();
+        const timeSpent = Math.round((endTime - startTime) / 1000); // 轉換為秒
+        
+        gtag('event', 'time_spent', {
+            'event_category': 'engagement',
+            'event_label': 'duration',
+            'value': timeSpent
+        });
+        });
+
     </script>
 
     <script>
@@ -1781,6 +1832,15 @@
                 
             }
     }
+
+    // 追蹤 PWA 安裝事件
+    window.addEventListener('appinstalled', (event) => {
+    gtag('event', 'pwa_installed', {
+        'event_category': 'engagement',
+        'event_label': 'install'
+    });
+    });
+
     </script>
 
     <!-- 普通提示模態框 -->
