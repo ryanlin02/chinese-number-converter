@@ -908,6 +908,7 @@
         }
 
         // 添加更新時間的函數
+        // 修改後的代碼
         function updateTime() {
             const now = new Date();
             const days = ['日', '一', '二', '三', '四', '五', '六'];
@@ -915,7 +916,9 @@
             // 調整為台北時間 (GMT+8)
             const taipeiTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
             
-            const year = taipeiTime.getUTCFullYear();
+            const westernYear = taipeiTime.getUTCFullYear();
+            // 計算民國年 (西元年 - 1911)
+            const rocYear = westernYear - 1911;
             const month = String(taipeiTime.getUTCMonth() + 1).padStart(2, '0');
             const date = String(taipeiTime.getUTCDate()).padStart(2, '0');
             const day = days[taipeiTime.getUTCDay()];
@@ -923,7 +926,7 @@
             const minutes = String(taipeiTime.getUTCMinutes()).padStart(2, '0');
             const seconds = String(taipeiTime.getUTCSeconds()).padStart(2, '0');
             
-            const timeString = `${year}年${month}月${date}日 星期${day} ${hours}:${minutes}:${seconds}`;
+            const timeString = `民國${rocYear}年${month}月${date}日 星期${day} ${hours}:${minutes}:${seconds}`;
             document.getElementById('currentTime').textContent = timeString;
         }
 
