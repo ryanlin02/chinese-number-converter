@@ -241,14 +241,15 @@
         margin-bottom: 8px;
     }
     
+    /* 1. 修改按鍵高度 */
     .calc-btn {
         flex: 1;
         margin: 0 5px;
-        padding: 10px 5px;
+        padding: 8px 5px; /* 減少內邊距 */
         font-size: 24px;
         background-color: var(--secondary-color);
         color: var(--text-color);
-        border: 1px solid var(--border-color);
+        border: 2px solid var(--border-color); /* 增加邊框寬度 */
         border-radius: 10px;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
@@ -258,7 +259,9 @@
         backface-visibility: hidden;
         transform: translateZ(0);
         touch-action: manipulation;
-        height: 65px;
+        height: 50px; /* 降低按鍵高度 */
+        min-height: 45px; /* 確保最小高度 */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); /* 增強陰影效果 */
     }
 
     /* 為active狀態添加特定樣式 */
@@ -767,6 +770,130 @@
         transform: translateY(-2px);
     }
 
+    /* 鍵盤切換容器樣式 */
+    .keyboard-switch-container {
+        margin: 6px 0; /* 減少上下外邊距 */
+        padding: 0 5px;
+    }
+
+    .keyboard-switch {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--secondary-color);
+        border-radius: 10px;
+        padding: 4px; /* 減少內邊距 */
+        box-shadow: 0 3px 6px var(--shadow-color); /* 略微調整陰影 */
+        overflow: hidden;
+    }
+
+    .switch-btn {
+        flex: 1;
+        background-color: transparent;
+        color: var(--text-color);
+        border: none;
+        padding: 6px 0; /* 將上下內邊距從 10px 減少到 6px */
+        margin: 0 2px;
+        border-radius: 8px;
+        font-size: 15px; /* 略微減小字體大小 */
+        font-weight: bold;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        height: 32px; /* 明確設定按鍵高度 */
+        line-height: 1; /* 確保文字垂直居中 */
+    }
+
+    .switch-btn.active {
+        background-color: var(--button-orange);
+        color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* 減小陰影 */
+    }
+
+    .switch-btn:hover:not(.active) {
+        background-color: var(--hover-color);
+    }
+
+    /* 計算機顯示區域樣式 */
+    .calculator-display {
+        background-color: #222222;
+        border-radius: 8px;
+        margin-bottom: 8px; /* 減少底部邊距 */
+        padding: 8px 15px; /* 減少上下內邊距 */
+        text-align: right;
+        min-height: 28px; /* 減少最小高度 */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        overflow-x: auto;
+        white-space: nowrap;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--border-color); /* 增加邊框寬度 */
+    }
+
+    #calculator-expression {
+        font-size: 28px;
+        color: var(--text-color);
+        font-family: monospace;
+    }
+
+    /* 計算機按鈕樣式 */
+    .calc-number-btn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 確保計算機數字按鍵也能顯示橘色的大寫數字 */
+    .calc-number-btn .financial-char {
+        font-size: 20px; /* 略微降低大寫數字的字體大小 */
+        color: var(--button-orange);
+    }
+
+    .calc-number-btn .arabic-number {
+        font-size: 24px; /* 略微降低阿拉伯數字的字體大小 */
+        margin-right: 8px;
+    }
+
+    /* 當點擊計算機數字按鍵時，確保大寫數字也變為白色 */
+    .calc-number-btn:active .arabic-number,
+    .calc-number-btn:active .financial-char {
+        color: white; /* 確保在橘色背景下文字顯示為白色 */
+    }
+
+    .calc-number-btn:active {
+        background-color: var(--button-orange);
+        color: white;
+    }
+
+    .operator-btn {
+        font-weight: bold;
+    }
+
+    .special-operator {
+        color: var(--button-orange);
+    }
+
+    .special-operator:active {
+        background-color: rgba(255, 156, 51, 0.2);
+    }
+
+    .calc-equals {
+        background-color: var(--button-orange);
+        color: white;
+    }
+
+    .calc-equals:hover {
+        background-color: #e88a22;
+    }
+
+    /* 修改按鈕的樣式使其能容納計算機特殊字符 */
+    .calc-btn {
+        height: 50px; /* 進一步降低高度 */
+        min-height: 45px; /* 確保有最小高度 */
+        border: 2px solid var(--border-color); /* 增加邊框寬度 */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); /* 增強陰影效果 */
+    }
+
     </style>
 </head>
 <body>
@@ -810,7 +937,16 @@
         </div>
     </div>
     
-    <div class="keyboard-container">
+    <!-- 在 keyboard-container 之前添加鍵盤切換按鈕 -->
+    <div class="keyboard-switch-container">
+        <div class="keyboard-switch">
+            <button id="direct-input-btn" class="switch-btn active">直接輸入</button>
+            <button id="calculator-btn" class="switch-btn">計算機</button>
+        </div>
+    </div>
+
+    <!-- 原始的數字鍵盤（直接輸入模式） -->
+    <div id="direct-input-keyboard" class="keyboard-container">
         <div class="calculator-keyboard">
             <div class="keyboard-row">
                 <button class="calc-btn number-btn" onclick="appendNumber(7)">
@@ -861,6 +997,76 @@
                     <div class="financial-char">零/拾</div>
                 </button>
                 <button class="calc-btn backspace-btn" onclick="backspace()">退回</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增的計算機鍵盤（計算機模式） -->
+    <div id="calculator-keyboard" class="keyboard-container" style="display: none;">
+        <div class="calculator-display">
+            <div id="calculator-expression">0</div>
+        </div>
+        <div class="calculator-keyboard">
+            <div class="keyboard-row">
+                <button class="calc-btn operator-btn" onclick="calcClear()">C</button>
+                <button class="calc-btn operator-btn" onclick="calcAddOperator('(')">(</button>
+                <button class="calc-btn operator-btn" onclick="calcAddOperator(')')">)</button>
+                <button class="calc-btn operator-btn special-operator" onclick="calcAddOperator('/')">/</button>
+            </div>
+            <div class="keyboard-row">
+                <!-- 第一行：7, 8, 9 -->
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(7)">
+                    <div class="arabic-number">7</div>
+                    <div class="financial-char">柒</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(8)">
+                    <div class="arabic-number">8</div>
+                    <div class="financial-char">捌</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(9)">
+                    <div class="arabic-number">9</div>
+                    <div class="financial-char">玖</div>
+                </button>
+                <button class="calc-btn operator-btn special-operator" onclick="calcAddOperator('*')">×</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(4)">
+                    <div class="arabic-number">4</div>
+                    <div class="financial-char">肆</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(5)">
+                    <div class="arabic-number">5</div>
+                    <div class="financial-char">伍</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(6)">
+                    <div class="arabic-number">6</div>
+                    <div class="financial-char">陸</div>
+                </button>
+                <button class="calc-btn operator-btn special-operator" onclick="calcAddOperator('-')">－</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(1)">
+                    <div class="arabic-number">1</div>
+                    <div class="financial-char">壹</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(2)">
+                    <div class="arabic-number">2</div>
+                    <div class="financial-char">貳</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(3)">
+                    <div class="arabic-number">3</div>
+                    <div class="financial-char">參</div>
+                </button>
+                <button class="calc-btn operator-btn special-operator" onclick="calcAddOperator('+')">＋</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="calc-btn backspace-btn" onclick="calcBackspace()">退回</button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber(0)">
+                    <div class="arabic-number">0</div>
+                    <div class="financial-char">零</div>
+                </button>
+                <button class="calc-btn calc-number-btn" onclick="calcAddNumber('.')">.</button>
+                <button class="calc-btn operator-btn calc-equals" onclick="calcEvaluate()">＝</button>
             </div>
         </div>
     </div>
@@ -1717,6 +1923,183 @@
             'event_label': 'duration',
             'value': timeSpent
         });
+        });
+
+        // 鍵盤切換相關程式碼
+        document.addEventListener('DOMContentLoaded', function() {
+            // 獲取切換按鈕和兩種鍵盤元素
+            const directInputBtn = document.getElementById('direct-input-btn');
+            const calculatorBtn = document.getElementById('calculator-btn');
+            const directInputKeyboard = document.getElementById('direct-input-keyboard');
+            const calculatorKeyboard = document.getElementById('calculator-keyboard');
+            
+            // 切換至直接輸入模式
+            directInputBtn.addEventListener('click', function() {
+                directInputBtn.classList.add('active');
+                calculatorBtn.classList.remove('active');
+                directInputKeyboard.style.display = 'block';
+                calculatorKeyboard.style.display = 'none';
+                
+                // 追蹤切換事件
+                if (typeof gtag === 'function') {
+                    gtag('event', 'switch_keyboard', {
+                        'event_category': 'engagement',
+                        'event_label': 'direct_input'
+                    });
+                }
+            });
+            
+            // 切換至計算機模式
+            calculatorBtn.addEventListener('click', function() {
+                calculatorBtn.classList.add('active');
+                directInputBtn.classList.remove('active');
+                calculatorKeyboard.style.display = 'block';
+                directInputKeyboard.style.display = 'none';
+                
+                // 追蹤切換事件
+                if (typeof gtag === 'function') {
+                    gtag('event', 'switch_keyboard', {
+                        'event_category': 'engagement',
+                        'event_label': 'calculator'
+                    });
+                }
+            });
+        });
+
+        // 計算機功能相關程式碼
+        let calculatorExpression = '0';
+        let lastResult = null;
+
+        // 更新計算機顯示
+        function updateCalculatorDisplay() {
+            document.getElementById('calculator-expression').textContent = calculatorExpression;
+        }
+
+        // 添加數字到計算機表達式
+        function calcAddNumber(num) {
+            // 如果顯示為0或上一次已經計算結果，則開始新的表達式
+            if (calculatorExpression === '0' || lastResult !== null) {
+                calculatorExpression = num.toString();
+                lastResult = null;
+            } else {
+                calculatorExpression += num.toString();
+            }
+            updateCalculatorDisplay();
+            
+            // 觸覺反饋
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+        }
+
+        // 添加運算符到計算機表達式
+        function calcAddOperator(operator) {
+            // 如果有上一次結果，使用該結果繼續計算
+            if (lastResult !== null) {
+                calculatorExpression = lastResult + operator;
+                lastResult = null;
+            } else {
+                // 防止連續輸入運算符
+                const lastChar = calculatorExpression[calculatorExpression.length - 1];
+                if (['+', '-', '*', '/'].includes(lastChar)) {
+                    calculatorExpression = calculatorExpression.slice(0, -1) + operator;
+                } else {
+                    calculatorExpression += operator;
+                }
+            }
+            updateCalculatorDisplay();
+            
+            // 觸覺反饋
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(70);
+            }
+        }
+
+        // 清除計算機表達式
+        function calcClear() {
+            calculatorExpression = '0';
+            lastResult = null;
+            updateCalculatorDisplay();
+            
+            // 觸覺反饋
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate([50, 50, 50]);
+            }
+        }
+
+        // 刪除計算機表達式的最後一個字符
+        function calcBackspace() {
+            if (lastResult !== null) {
+                // 如果有上一次結果，清除並開始新的計算
+                calculatorExpression = '0';
+                lastResult = null;
+            } else if (calculatorExpression.length <= 1) {
+                calculatorExpression = '0';
+            } else {
+                calculatorExpression = calculatorExpression.slice(0, -1);
+            }
+            updateCalculatorDisplay();
+            
+            // 觸覺反饋
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(70);
+            }
+        }
+
+        // 計算表達式結果
+        function calcEvaluate() {
+            try {
+                // 確保表達式是數學表達式
+                const sanitizedExpression = calculatorExpression.replace(/[^0-9+\-*/().]/g, '');
+                
+                // 計算結果
+                const result = eval(sanitizedExpression);
+                
+                // 處理小數點，保留兩位小數
+                const roundedResult = Math.round(result * 100) / 100;
+                
+                // 更新顯示
+                calculatorExpression = roundedResult.toString();
+                lastResult = calculatorExpression;
+                updateCalculatorDisplay();
+                
+                // 將結果自動填入總金額輸入框並更新轉換結果
+                const inputField = document.getElementById('arabicNumber');
+                // 只取整數部分填入發票金額
+                const integerResult = Math.floor(roundedResult);
+                inputField.value = integerResult.toString();
+                updateResults();
+                
+                // 觸覺反饋
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate([50, 100, 50]);
+                }
+                
+                // 顯示提示，表示計算結果已填入
+                //showToast(`計算結果 ${integerResult} 已自動填入`);
+                
+            } catch (error) {
+                // 計算錯誤處理
+                calculatorExpression = '錯誤';
+                lastResult = null;
+                updateCalculatorDisplay();
+                
+                // 在一秒後重置顯示
+                setTimeout(() => {
+                    calculatorExpression = '0';
+                    updateCalculatorDisplay();
+                }, 1000);
+                
+                // 觸覺反饋表示錯誤
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate([100, 50, 100]);
+                }
+            }
+        }
+
+        // 在頁面載入時初始化計算機顯示
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCalculatorDisplay();
         });
 
     </script>
