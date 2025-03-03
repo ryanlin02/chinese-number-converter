@@ -521,7 +521,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.85);
+        background-color: rgba(0, 0, 0, 0.9); /* 稍微增加背景透明度 */
         z-index: 1000;
         overflow-y: auto;
         animation: fadeIn 0.3s ease-out;
@@ -531,12 +531,21 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px;
+        padding: 12px 15px; /* 減少頂部內邊距 */
         background-color: var(--primary-color);
         position: sticky;
         top: 0;
         z-index: 1001;
         border-bottom: 2px solid var(--button-orange);
+    }
+
+    /* 新增這些樣式 */
+    .header-left {
+        flex: 1;
+    }
+
+    .header-right {
+        margin-right: 20px; /* 增加與關閉按鈕的距離 */
     }
 
     .history-header h2 {
@@ -552,15 +561,20 @@
         font-size: 24px;
         cursor: pointer;
         transition: all 0.3s ease;
+        padding: 5px 10px;
+        border-radius: 50%;
+        margin-left: 10px;
+        background-color: rgba(255, 255, 255, 0.1); /* 添加背景色使按鈕更明顯 */
     }
 
     .close-btn:hover {
         color: var(--button-orange);
         transform: scale(1.1);
+        background-color: rgba(255, 255, 255, 0.2);
     }
 
     .history-content {
-        padding: 15px;
+        padding: 10px; /* 減少內邊距 */
         max-width: 400px;
         margin: 0 auto;
     }
@@ -568,16 +582,25 @@
     .history-list {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px; /* 減少項目間隔 */
     }
 
+    /* 修改歷史項目樣式 */
     .history-item {
         background-color: var(--secondary-color);
-        padding: 12px;
-        border-radius: 10px;
+        padding: 8px 10px; /* 減少內邊距 */
+        border-radius: 8px; /* 稍微減少圓角 */
         position: relative;
         transition: all 0.3s ease;
         border-left: 3px solid var(--button-orange);
+        display: grid;
+        grid-template-columns: 1fr auto; /* 採用網格布局 */
+        grid-template-areas: 
+            "date actions"
+            "amount amount"
+            "details details"
+            "financial financial"; /* 新增大寫區域 */
+        gap: 4px; /* 減少間距 */
     }
 
     .history-item:hover {
@@ -588,27 +611,43 @@
     .history-date {
         font-weight: bold;
         color: var(--button-orange);
-        margin-bottom: 5px;
-        font-size: 16px;
+        font-size: 14px; /* 減小字體大小 */
+        margin-bottom: 2px; /* 減少底部邊距 */
+        grid-area: date;
     }
 
     .history-amount {
-        font-size: 18px;
-        margin-bottom: 8px;
+        font-size: 16px; /* 減小字體大小 */
+        margin-bottom: 4px; /* 減少底部邊距 */
+        grid-area: amount;
     }
 
     .history-details {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 修改為兩列等寬 */
+        font-size: 13px; /* 減小字體大小 */
         color: #cccccc;
-        margin-bottom: 10px;
+        margin-bottom: 4px; /* 減少底部邊距 */
+        grid-area: details;
+    }
+
+    /* 新增大寫金額樣式 */
+    .history-financial {
+        font-size: 15px; /* 較大的字體 */
+        color: #e8e8e8; /* 較亮的顏色 */
+        font-weight: 500; /* 稍微加粗 */
+        margin-bottom: 6px; /* 底部邊距 */
+        grid-area: financial;
+        border-top: 1px dashed var(--border-color); /* 頂部分隔線 */
+        padding-top: 4px; /* 頂部內邊距 */
     }
 
     .history-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 8px;
+        gap: 6px; /* 減少按鍵間距 */
+        grid-area: actions;
+        align-self: start; /* 置頂對齊 */
     }
 
     .delete-btn, .detail-btn {
@@ -616,9 +655,9 @@
         color: var(--text-color);
         border: 1px solid var(--border-color);
         border-radius: 4px;
-        padding: 5px 10px;
+        padding: 3px 8px; /* 減小內邊距 */
         cursor: pointer;
-        font-size: 14px;
+        font-size: 12px; /* 減小字體大小 */
         transition: all 0.3s ease;
     }
 
@@ -666,11 +705,10 @@
         background: none;
         border: 1px solid #e74c3c;
         color: #e74c3c;
-        font-size: 14px;
-        padding: 5px 10px;
+        font-size: 13px; /* 減小字體大小 */
+        padding: 4px 12px; /* 增加左右內邊距 */
         border-radius: 4px;
         cursor: pointer;
-        margin-right: 10px;
         transition: all 0.3s ease;
     }
 
@@ -1126,11 +1164,13 @@
     <!-- 添加歷史記錄面板 -->
     <div id="historyPanel" class="history-panel">
         <div class="history-header">
-            <h2>發票歷史記錄</h2>
-            <div style="display: flex; align-items: center;">
-                <button class="delete-all-btn" onclick="confirmDeleteAll()">全部刪除</button>
-                <button class="close-btn" onclick="toggleHistoryPanel()">×</button>
+            <div class="header-left">
+                <h2>發票歷史記錄</h2>
             </div>
+            <div class="header-right">
+                <button class="delete-all-btn" onclick="confirmDeleteAll()">全部刪除</button>
+            </div>
+            <button class="close-btn" onclick="toggleHistoryPanel()">×</button>
         </div>
         <div id="historyContent" class="history-content"></div>
     </div>
@@ -1541,6 +1581,7 @@
                             <div>未稅: ${invoice.preTaxAmount}</div>
                             <div>稅金: ${invoice.taxAmount}</div>
                         </div>
+                        <div class="history-financial">大寫: ${invoice.financialAmount}</div>
                         <div class="history-actions">
                             <button class="detail-btn" onclick="loadInvoiceToForm(${invoice.id})">查看</button>
                             <button class="delete-btn" onclick="deleteInvoice(${invoice.id})">刪除</button>
