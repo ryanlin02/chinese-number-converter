@@ -513,19 +513,21 @@
         transform: scale(0.95);
     }
 
-    /* 歷史面板樣式 */
-    .history-panel {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.85);
-        z-index: 1000;
+    /* 更新歷史面板樣式 */
+    .history-content {
+        padding: 12px;
+        max-width: 400px;
+        margin: 0 auto;
+        max-height: calc(100vh - 100px);
         overflow-y: auto;
-        animation: fadeIn 0.3s ease-out;
     }
+
+    .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
 
     .history-header {
         display: flex;
@@ -571,30 +573,45 @@
         gap: 12px;
     }
 
+    /* 更新歷史記錄項目樣式 */
     .history-item {
         background-color: var(--secondary-color);
-        padding: 12px;
+        padding: 10px;
         border-radius: 10px;
         position: relative;
         transition: all 0.3s ease;
         border-left: 3px solid var(--button-orange);
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .history-item:hover {
-        transform: translateX(5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transform: translateX(3px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .history-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
     }
 
     .history-date {
         font-weight: bold;
         color: var(--button-orange);
-        margin-bottom: 5px;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .history-amount {
-        font-size: 18px;
-        margin-bottom: 8px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .history-details-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
     }
 
     .history-details {
@@ -605,10 +622,36 @@
         margin-bottom: 10px;
     }
 
+    .detail-col {
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+
+    .detail-label {
+        color: #cccccc;
+        font-size: 13px;
+        margin-right: 4px;
+    }
+
+    .detail-value {
+        font-size: 13px;
+        color: #ffffff;
+    }
+
+    .history-financial {
+        margin-bottom: 6px;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .history-actions {
         display: flex;
         justify-content: flex-end;
         gap: 8px;
+        margin-top: 4px;
     }
 
     .delete-btn, .detail-btn {
@@ -616,9 +659,9 @@
         color: var(--text-color);
         border: 1px solid var(--border-color);
         border-radius: 4px;
-        padding: 5px 10px;
+        padding: 3px 8px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 12px;
         transition: all 0.3s ease;
     }
 
@@ -894,6 +937,51 @@
         box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); /* 增強陰影效果 */
     }
 
+    .food-animation-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    }
+
+    .food-text {
+        position: absolute;
+        font-family: "Microsoft JhengHei", Arial, sans-serif;
+        font-weight: bold;
+        color: var(--button-orange);
+        font-size: 0;
+        text-shadow: 0 0 15px rgba(255, 156, 51, 0.8);
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.5s, transform 0.5s, font-size 0.5s;
+    }
+
+    .food-text.show {
+        opacity: 1;
+        transform: translateY(0);
+        font-size: 90px; /* 增加字體大小 */
+        animation: pulse 0.4s ease-in-out; /* 加快動畫時間 */
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(0.8); opacity: 0; }
+        50% { transform: scale(3); opacity: 1; } /* 增加放大效果 */
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .food-text.hide {
+        opacity: 0;
+        transform: translateY(-50px);
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
     </style>
 </head>
 <body>
@@ -1009,8 +1097,8 @@
         <div class="calculator-keyboard">
             <div class="keyboard-row">
                 <button class="calc-btn operator-btn" onclick="calcClear()">C</button>
-                <button class="calc-btn operator-btn" onclick="calcAddOperator('(')">(</button>
-                <button class="calc-btn operator-btn" onclick="calcAddOperator(')')">)</button>
+                <button class="calc-btn operator-btn special-operator" onclick="calcTaxAddition()" style="font-size: 20px;">稅外加</button>
+                <button class="calc-btn operator-btn special-operator" onclick="showFoodAnimation()" style="color: #FF5050;">❤</button>
                 <button class="calc-btn operator-btn special-operator" onclick="calcAddOperator('/')">/</button>
             </div>
             <div class="keyboard-row">
@@ -1490,11 +1578,23 @@
             invoiceHistory.forEach(invoice => {
                 html += `
                     <div class="history-item">
-                        <div class="history-date">${formatDate(invoice.date)}</div>
-                        <div class="history-amount">總金額: ${invoice.totalAmount}</div>
-                        <div class="history-details">
-                            <div>未稅: ${invoice.preTaxAmount}</div>
-                            <div>稅金: ${invoice.taxAmount}</div>
+                        <div class="history-item-header">
+                            <div class="history-date">${formatDate(invoice.date)}</div>
+                            <div class="history-amount">${invoice.totalAmount} 元</div>
+                        </div>
+                        <div class="history-details-row">
+                            <div class="detail-col">
+                                <span class="detail-label">未稅:</span>
+                                <span class="detail-value">${invoice.preTaxAmount}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">稅金:</span>
+                                <span class="detail-value">${invoice.taxAmount}</span>
+                            </div>
+                        </div>
+                        <div class="history-financial">
+                            <span class="detail-label">大寫:</span>
+                            <span class="detail-value">${invoice.financialAmount}</span>
                         </div>
                         <div class="history-actions">
                             <button class="detail-btn" onclick="loadInvoiceToForm(${invoice.id})">查看</button>
@@ -2017,6 +2117,68 @@
             }
         }
 
+        // 稅外加功能 - 將當前值乘以1.05
+        function calcTaxAddition() {
+            try {
+                // 如果有上一次結果，使用該結果進行計算
+                if (lastResult !== null) {
+                    const value = parseFloat(lastResult);
+                    const result = value * 1.05;
+                    // 四捨五入到小數點後兩位
+                    calculatorExpression = (Math.round(result * 100) / 100).toString();
+                } else {
+                    // 嘗試計算當前表達式的值
+                    try {
+                        // 確保表達式是數學表達式
+                        const sanitizedExpression = calculatorExpression.replace(/[^0-9+\-*/().]/g, '');
+                        
+                        // 如果表達式有效則計算
+                        if (sanitizedExpression) {
+                            const value = eval(sanitizedExpression);
+                            const result = value * 1.05;
+                            // 四捨五入到小數點後兩位
+                            calculatorExpression = (Math.round(result * 100) / 100).toString();
+                        } else {
+                            // 如果表達式為空或無效，從0開始
+                            calculatorExpression = "0";
+                        }
+                    } catch (error) {
+                        // 如果計算失敗，直接使用當前值
+                        const value = parseFloat(calculatorExpression) || 0;
+                        const result = value * 1.05;
+                        calculatorExpression = (Math.round(result * 100) / 100).toString();
+                    }
+                }
+                
+                lastResult = null;
+                updateCalculatorDisplay();
+                
+                // 將結果自動填入總金額輸入框並更新轉換結果
+                const inputField = document.getElementById('arabicNumber');
+                // 只取整數部分填入發票金額
+                const calculatedValue = parseFloat(calculatorExpression);
+                const integerResult = Math.floor(calculatedValue);
+                inputField.value = integerResult.toString();
+                updateResults(); // 更新其他顯示欄位
+                
+                // 觸覺反饋
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(70);
+                }
+            } catch (error) {
+                // 處理可能的錯誤
+                console.error('稅外加計算錯誤:', error);
+                calculatorExpression = '錯誤';
+                updateCalculatorDisplay();
+                
+                // 在一秒後重置顯示
+                setTimeout(() => {
+                    calculatorExpression = '0';
+                    updateCalculatorDisplay();
+                }, 1000);
+            }
+        }
+
         // 清除計算機表達式
         function calcClear() {
             calculatorExpression = '0';
@@ -2098,6 +2260,74 @@
                 }
             }
         }
+
+        // 儲存可以播放的文字
+        const foodTexts = ['雞', '肉', '飯', '真', '好', '吃'];
+        let animationInProgress = false;
+
+        // 顯示食物動畫
+        function showFoodAnimation() {
+        // 如果正在播放動畫，直接返回
+        if (animationInProgress) return;
+        
+        // 設置動畫進行中標記
+        animationInProgress = true;
+        
+        // 創建動畫容器
+        const container = document.createElement('div');
+        container.className = 'food-animation-container';
+        document.body.appendChild(container);
+        
+        // 觸覺反饋 - 長震動
+        if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(100);
+        }
+        
+        // 依序顯示文字
+        let index = 0;
+        const showNextText = () => {
+            if (index >= foodTexts.length) {
+                // 動畫結束，移除容器
+                setTimeout(() => {
+                    document.body.removeChild(container);
+                    animationInProgress = false;
+                }, 200); // 從300ms減少到200ms
+                return;
+            }
+            
+            // 創建文字元素
+            const textElement = document.createElement('div');
+            textElement.className = 'food-text';
+            textElement.textContent = foodTexts[index];
+            container.appendChild(textElement);
+            
+            // 觸發震動
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+            
+            // 顯示動畫 - 加快速度
+            setTimeout(() => {
+                textElement.classList.add('show');
+                
+                // 淡出動畫 - 加快速度
+                setTimeout(() => {
+                    textElement.classList.add('hide');
+                    textElement.classList.remove('show');
+                    
+                    // 移除元素 - 加快速度
+                    setTimeout(() => {
+                        container.removeChild(textElement);
+                        index++;
+                        showNextText();
+                    }, 200); // 從300ms減少到200ms
+                }, 500); // 從800ms減少到500ms
+            }, 30); // 從50ms減少到30ms
+        };
+        
+        // 開始動畫
+        showNextText();
+    }
 
         // 在頁面載入時初始化計算機顯示
         document.addEventListener('DOMContentLoaded', function() {
