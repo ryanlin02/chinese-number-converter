@@ -513,21 +513,19 @@
         transform: scale(0.95);
     }
 
-    /* 更新歷史面板樣式 */
-    .history-content {
-        padding: 12px;
-        max-width: 400px;
-        margin: 0 auto;
-        max-height: calc(100vh - 100px);
+    /* 歷史面板樣式 */
+    .history-panel {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        z-index: 1000;
         overflow-y: auto;
+        animation: fadeIn 0.3s ease-out;
     }
-
-    .history-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
 
     .history-header {
         display: flex;
@@ -573,45 +571,30 @@
         gap: 12px;
     }
 
-    /* 更新歷史記錄項目樣式 */
     .history-item {
         background-color: var(--secondary-color);
-        padding: 10px;
+        padding: 12px;
         border-radius: 10px;
         position: relative;
         transition: all 0.3s ease;
         border-left: 3px solid var(--button-orange);
-        margin-bottom: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .history-item:hover {
-        transform: translateX(3px);
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .history-item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 6px;
+        transform: translateX(5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .history-date {
         font-weight: bold;
         color: var(--button-orange);
-        font-size: 14px;
+        margin-bottom: 5px;
+        font-size: 16px;
     }
 
     .history-amount {
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .history-details-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 4px;
+        font-size: 18px;
+        margin-bottom: 8px;
     }
 
     .history-details {
@@ -622,36 +605,10 @@
         margin-bottom: 10px;
     }
 
-    .detail-col {
-        display: flex;
-        align-items: center;
-        flex: 1;
-    }
-
-    .detail-label {
-        color: #cccccc;
-        font-size: 13px;
-        margin-right: 4px;
-    }
-
-    .detail-value {
-        font-size: 13px;
-        color: #ffffff;
-    }
-
-    .history-financial {
-        margin-bottom: 6px;
-        font-size: 13px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
     .history-actions {
         display: flex;
         justify-content: flex-end;
         gap: 8px;
-        margin-top: 4px;
     }
 
     .delete-btn, .detail-btn {
@@ -659,9 +616,9 @@
         color: var(--text-color);
         border: 1px solid var(--border-color);
         border-radius: 4px;
-        padding: 3px 8px;
+        padding: 5px 10px;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 14px;
         transition: all 0.3s ease;
     }
 
@@ -1578,23 +1535,11 @@
             invoiceHistory.forEach(invoice => {
                 html += `
                     <div class="history-item">
-                        <div class="history-item-header">
-                            <div class="history-date">${formatDate(invoice.date)}</div>
-                            <div class="history-amount">${invoice.totalAmount} 元</div>
-                        </div>
-                        <div class="history-details-row">
-                            <div class="detail-col">
-                                <span class="detail-label">未稅:</span>
-                                <span class="detail-value">${invoice.preTaxAmount}</span>
-                            </div>
-                            <div class="detail-col">
-                                <span class="detail-label">稅金:</span>
-                                <span class="detail-value">${invoice.taxAmount}</span>
-                            </div>
-                        </div>
-                        <div class="history-financial">
-                            <span class="detail-label">大寫:</span>
-                            <span class="detail-value">${invoice.financialAmount}</span>
+                        <div class="history-date">${formatDate(invoice.date)}</div>
+                        <div class="history-amount">總金額: ${invoice.totalAmount}</div>
+                        <div class="history-details">
+                            <div>未稅: ${invoice.preTaxAmount}</div>
+                            <div>稅金: ${invoice.taxAmount}</div>
                         </div>
                         <div class="history-actions">
                             <button class="detail-btn" onclick="loadInvoiceToForm(${invoice.id})">查看</button>
