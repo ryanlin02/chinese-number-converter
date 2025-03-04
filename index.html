@@ -173,21 +173,11 @@
         justify-content: flex-end;
         text-align: right;
     }
-    
-    .result::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--button-orange), transparent);
-        animation: timelineSlide 3s linear infinite;
-    }
 
     /* 使"未稅"和"稅金"输入框不显示线条 */
     /* 使"未稅"、"稅金"和"中文"输入框不显示线条 */
-    #preTaxAmount::before, #taxAmount::before, #traditionalResult::before {
+    /* 移除所有輸入框的線條動畫 */
+    .result::before {
         display: none;
     }
 
@@ -207,11 +197,6 @@
     .result:not(:empty)::after {
         display: none;
     }
-    
-    @keyframes timelineSlide {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
 
     /* 專門為 financialResult 添加的樣式 */
     /* 只保留 financialResult 上方線條動畫，移除其他特效 */
@@ -220,8 +205,8 @@
         background-color: #222222;
         border: 2px solid var(--border-color);
         font-size: 21px;
-        min-height: 38px;
         height: auto;
+        min-height: 42px;
         max-height: 76px;
         overflow-y: auto;
         overflow-x: auto;
@@ -238,18 +223,6 @@
         transition: none;
         animation: none;
         transform: none !important;
-    }
-
-    /* 保留上方線條動畫 */
-    #financialResult::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--button-orange), transparent);
-        animation: timelineSlide 3s linear infinite;
     }
     
     .container, .keyboard-container {
