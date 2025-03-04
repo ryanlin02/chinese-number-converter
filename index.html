@@ -184,10 +184,54 @@
         background: linear-gradient(90deg, transparent, var(--button-orange), transparent);
         animation: timelineSlide 3s linear infinite;
     }
+
+    /* 使"未稅"和"稅金"输入框不显示线条 */
+    /* 使"未稅"、"稅金"和"中文"输入框不显示线条 */
+    #preTaxAmount::before, #taxAmount::before, #traditionalResult::before {
+        display: none;
+    }
+
+    .result::after {
+        content: attr(data-placeholder);
+        opacity: 0.5;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        color: #888888;
+        font-size: 16px; /* 從 14px 修改為 16px */
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    .result:not(:empty)::after {
+        display: none;
+    }
     
     @keyframes timelineSlide {
         0% { left: -100%; }
         100% { left: 100%; }
+    }
+
+    /* 專門為 financialResult 添加的樣式 */
+    #financialResult {
+        padding: 6px 8px;
+        background-color: #222222;
+        border: 2px solid var(--border-color);
+        font-size: 21px;
+        min-height: 38px; /* 保留最小高度 */
+        height: auto; /* 改為 auto 以適應多行內容 */
+        max-height: 76px; /* 最大高度設為兩行高度 */
+        overflow-y: auto; /* 允許垂直滾動 */
+        overflow-x: auto;
+        white-space: normal; /* 允許換行 */
+        word-wrap: break-word; /* 確保長單詞也能換行 */
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-family: monospace;
+        box-sizing: border-box;
+        display: block; /* 改為 block 以便支持換行 */
+        text-align: right; /* 文字靠右對齊 */
+        line-height: 1.2; /* 設置行高 */
     }
     
     .container, .keyboard-container {
@@ -229,6 +273,12 @@
         font-weight: bold;
         color: var(--button-orange);
         flex-shrink: 0;
+    }
+
+    .result-group-horizontal label:empty {
+        width: 0;
+        padding-right: 0;
+        margin-right: 0;
     }
     
     .calculator-keyboard {
@@ -996,6 +1046,53 @@
         transition: opacity 0.2s, transform 0.2s;
     }
 
+    /* 添加在 style 標籤內的最後 */
+    .financial-digit {
+        color: #FFBE7A; /* 較淺的橘色，更接近白色 */
+        display: inline; /* 確保是行內元素 */
+    }
+
+    /* 添加限制位數的提示樣式 */
+    .limit-notification {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background-color: rgba(51, 51, 51, 0.95);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        text-align: center;
+        transition: transform 0.3s ease-out;
+        border: 2px solid var(--button-orange);
+        max-width: 80%;
+    }
+
+    .limit-notification.show {
+        transform: translate(-50%, -50%) scale(1);
+        animation: pulse-effect 0.5s ease-out;
+    }
+
+    .limit-notification .icon {
+        font-size: 40px;
+        color: var(--button-orange);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .limit-notification .message {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    @keyframes pulse-effect {
+        0% { transform: translate(-50%, -50%) scale(0.95); }
+        50% { transform: translate(-50%, -50%) scale(1.05); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
     </style>
 </head>
 <body>
@@ -1029,12 +1126,12 @@
             
             <div class="result-group-horizontal">
                 <label>中文</label>
-                <div class="result" id="traditionalResult"></div>
+                <div class="result" id="traditionalResult" data-placeholder="這裡會顯示轉換後的中文數字"></div>
             </div>
             
             <div class="result-group-horizontal">
-                <label>大寫</label>
-                <div class="result" id="financialResult"></div>
+                <label></label>
+                <div class="result" id="financialResult" data-placeholder="這裡會顯示轉換後的國字大寫"></div>
             </div>
         </div>
     </div>
@@ -1291,6 +1388,15 @@
                     document.getElementById('taxAmount').textContent = '';
                     return;
                 }
+
+                // 檢查是否超過9位數
+                if (arabicNumber.length > 9) {
+                    document.getElementById('traditionalResult').textContent = '數值過大';
+                    document.getElementById('financialResult').textContent = '發票金額不能超過9位數';
+                    document.getElementById('preTaxAmount').textContent = '';
+                    document.getElementById('taxAmount').textContent = '';
+                    return;
+                }
                 
                 // 計算未稅金額和稅金
                 const totalAmount = parseInt(arabicNumber);
@@ -1302,12 +1408,12 @@
                 document.getElementById('taxAmount').textContent = taxAmount;
                 
                 // 轉換為繁體中文並更新
-                const traditionalResult = arabicToChineseNumber(arabicNumber, 'traditional') + ' 新台幣';
+                const traditionalResult = arabicToChineseNumber(arabicNumber, 'traditional') + ' 元整';
                 document.getElementById('traditionalResult').textContent = traditionalResult;
                 
                 // 轉換為大寫金額並更新
                 const financialResult = arabicToChineseNumber(arabicNumber, 'financial') + ' 圓整';
-                document.getElementById('financialResult').textContent = financialResult;
+                document.getElementById('financialResult').innerHTML = financialResult; // 使用 innerHTML 而不是 textContent
                 
                 // 添加觸覺反饋（如果設備支持）
                 if (window.navigator && window.navigator.vibrate) {
@@ -1341,7 +1447,7 @@
             // 處理整數部分
             let intResult = '';
             if (integerPart === '0') {
-                intResult = digits[0];
+                intResult = format === 'financial' ? '<span class="financial-digit">零</span>' : digits[0];
             } else {
                 const len = integerPart.length;
                 
@@ -1364,7 +1470,13 @@
                             // 非零數字直接轉換並加上單位
                             lastWasZero = false;
                             hasAddedUnit = false;
-                            intResult += digits[digit] + units[pos];
+                            
+                            // 在 financial 格式中為數字添加特殊標籤
+                            if (format === 'financial') {
+                                intResult += `<span class="financial-digit">${digits[digit]}</span>${units[pos]}`;
+                            } else {
+                                intResult += digits[digit] + units[pos];
+                            }
                         } else {
                             // 處理零的特殊規則
                             if (pos === 4 || pos === 8) {
@@ -1378,7 +1490,11 @@
                                 }
                             } else if (i < len - 1 && integerPart.charAt(i + 1) !== '0' && !lastWasZero) {
                                 // 當前數字是0，下一個不是0，且上一個不是0，加上零
-                                intResult += digits[0];
+                                if (format === 'financial') {
+                                    intResult += `<span class="financial-digit">${digits[0]}</span>`;
+                                } else {
+                                    intResult += digits[0];
+                                }
                                 lastWasZero = true;
                             }
                         }
@@ -1391,7 +1507,11 @@
             if (decimalPart) {
                 decResult = '點';
                 for (let i = 0; i < decimalPart.length; i++) {
-                    decResult += digits[parseInt(decimalPart.charAt(i))];
+                    if (format === 'financial') {
+                        decResult += `<span class="financial-digit">${digits[parseInt(decimalPart.charAt(i))]}</span>`;
+                    } else {
+                        decResult += digits[parseInt(decimalPart.charAt(i))];
+                    }
                 }
             }
             
@@ -1402,6 +1522,19 @@
         // 添加數字到輸入框
         function appendNumber(num) {
             const inputField = document.getElementById('arabicNumber');
+            const currentValue = inputField.value;
+            
+            // 檢查是否已達到9位數限制
+            if (currentValue.length >= 9) {
+                // 顯示限制提示
+                showLimitNotification();
+                
+                // 給予觸覺反饋（如果設備支持）
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate([50, 30, 50]); // 錯誤震動模式
+                }
+                return;
+            }
             
             // 只允許輸入正整數
             if (!isNaN(num)) {
@@ -2019,6 +2152,43 @@
             }, 800);
         }
 
+        // 顯示位數限制提示
+        function showLimitNotification() {
+            // 檢查是否已存在提示
+            let notification = document.querySelector('.limit-notification');
+            
+            if (!notification) {
+                // 創建提示元素
+                notification = document.createElement('div');
+                notification.className = 'limit-notification';
+                
+                // 添加內容
+                notification.innerHTML = `
+                    <span class="icon">⚠️</span>
+                    <div class="message">發票金額別亂開！</div>
+                    <div>會被查稅喔！</div>
+                `;
+                
+                // 添加到頁面
+                document.body.appendChild(notification);
+                
+                // 自動在2秒後移除
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 2000);
+            }
+            
+            // 顯示提示
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+        }
+
         // 追蹤使用者參與度（頁面停留時間）
         let startTime = new Date().getTime();
         window.addEventListener('beforeunload', () => {
@@ -2237,6 +2407,17 @@
                 // 只取整數部分填入發票金額
                 const integerResult = Math.floor(roundedResult);
                 inputField.value = integerResult.toString();
+
+                // 檢查結果是否超過9位數
+                if (integerResult.toString().length > 9) {
+                    // 顯示限制提示
+                    showLimitNotification();
+                    // 設置為最大9位數
+                    inputField.value = "999999999";
+                } else {
+                    inputField.value = integerResult.toString();
+                }
+
                 updateResults();
                 
                 // 觸覺反饋
