@@ -43,6 +43,9 @@
         width: 100%;
         max-width: 400px;
         margin: 0 auto;
+        position: relative; /* 添加这行 */
+        overflow-x: hidden; /* 添加这行 */
+        -webkit-text-size-adjust: 100%; /* 添加这行 */
         padding: 0 3px;
         background-color: #333333;
         color: var(--text-color);
@@ -53,9 +56,9 @@
     h1 {
         color: var(--text-color);
         font-size: 22px;
-        margin: 15px 0 0; /* 將頂部邊距從5px增加到15px */
+        margin-bottom: 0px; /* 修改这里，保持与A网页一致 */
         border-bottom: 2px solid var(--button-orange);
-        padding-bottom: 3px;
+        padding-bottom: 5px; /* 修改这里，从3px改为5px */
         position: relative;
         transition: all 0.3s ease;
         text-align: center;
@@ -85,12 +88,12 @@
     }
     
     .row {
-        margin: 3px 0;
+        margin: 4px 0;
         display: flex;
         align-items: center;
         background: var(--secondary-color);
-        padding: 6px;
-        border-radius: 8px;
+        padding: 3px; /* 修改这里，从6px改为3px */
+        border-radius: 4px; /* 修改这里，从8px改为4px */
         box-shadow: 0 4px 8px var(--shadow-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
@@ -191,7 +194,7 @@
         background-color: var(--secondary-color);
         border-radius: 10px;
         padding: 10px;
-        margin: 8px 0 10px;
+        margin: 4px 0; /* 修改这里，统一使用4px边距 */
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: visible;
@@ -213,7 +216,7 @@
     .result-group-horizontal {
         display: flex;
         align-items: center;
-        margin-bottom: 6px;
+        margin-bottom: 4px; /* 修改这里，从6px改为4px */
         width: 100%;
     }
     
@@ -230,15 +233,15 @@
     
     .calculator-keyboard {
         width: 100%;
-        margin: 6px 0;
+        margin: 4px 0;
         touch-action: manipulation;
-        padding: 0 5px;
+        padding: 0; /* 移除左右内边距 */
     }
     
     .keyboard-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 4px; /* 修改这里，从8px改为4px */
     }
     
     /* 1. 修改按鍵高度 */
@@ -366,7 +369,7 @@
             var(--secondary-color) 0%,
             var(--button-orange) 50%,
             var(--secondary-color) 100%);
-        margin: 8px 0;
+        margin: 4px 0; /* 修改这里，从8px改为4px */
         overflow: hidden;
     }
     
@@ -394,7 +397,7 @@
         color: var(--text-color);
         padding: 8px;
         text-align: center;
-        margin-top: 8px;
+        margin-top: 4px; /* 修改这里，从8px改为4px */
         border-radius: 4px;
         transform: scale(1.05);
         text-shadow: 0 0 10px var(--button-orange);
@@ -408,7 +411,7 @@
     
     .content-wrapper {
         width: 100%;
-        padding: 3px 8px;
+        padding: 3px 0; /* 移除左右内边距，只保留上下内边距 */
         box-sizing: border-box;
         overflow: visible;
     }
@@ -484,14 +487,16 @@
     .action-buttons {
         display: flex;
         justify-content: space-between;
-        margin: 10px 0;
-        padding: 0 5px;
+        margin: 4px 0;
+        padding: 0; /* 移除左右内边距 */
+        width: 100%; /* 确保宽度100% */
+        box-sizing: border-box; /* 确保边框计算在宽度内 */
     }
 
     .action-btn {
-        flex: 1;
-        margin: 0 5px;
-        padding: 12px 5px;
+        flex: 1; /* 保持均等分配空间 */
+        margin: 0 2px; /* 减小按钮间的间距 */
+        padding: 12px 0; /* 移除左右内边距，只保留上下内边距 */
         background-color: var(--secondary-color);
         color: var(--text-color);
         border: 1px solid var(--border-color);
@@ -500,6 +505,10 @@
         transition: all 0.3s ease;
         font-size: 16px;
         font-weight: bold;
+        text-align: center; /* 确保文本居中 */
+        white-space: nowrap; /* 防止文本折行 */
+        overflow: hidden; /* 防止文本溢出 */
+        text-overflow: ellipsis; /* 文本溢出时显示省略号 */
     }
 
     .action-btn:hover {
@@ -511,6 +520,14 @@
 
     .action-btn:active {
         transform: scale(0.95);
+    }
+
+    .action-btn:first-child {
+        margin-left: 0; /* 第一个按钮左边距为0 */
+    }
+
+    .action-btn:last-child {
+        margin-right: 0; /* 最后一个按钮右边距为0 */
     }
 
     /* 歷史面板樣式 */
@@ -810,8 +827,10 @@
 
     /* 鍵盤切換容器樣式 */
     .keyboard-switch-container {
-        margin: 6px 0; /* 減少上下外邊距 */
-        padding: 0 5px;
+        margin: 4px 0; 
+        padding: 0; /* 移除左右内边距 */
+        width: 100%; /* 确保宽度100% */
+        box-sizing: border-box; /* 确保边框计算在宽度内 */
     }
 
     .keyboard-switch {
@@ -854,7 +873,7 @@
     .calculator-display {
         background-color: #222222;
         border-radius: 8px;
-        margin-bottom: 8px; /* 減少底部邊距 */
+        margin-bottom: 4px; /* 修改这里，从8px改为4px */
         padding: 8px 15px; /* 減少上下內邊距 */
         text-align: right;
         min-height: 28px; /* 減少最小高度 */
