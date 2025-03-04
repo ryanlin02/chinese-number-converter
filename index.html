@@ -214,24 +214,42 @@
     }
 
     /* 專門為 financialResult 添加的樣式 */
+    /* 只保留 financialResult 上方線條動畫，移除其他特效 */
     #financialResult {
         padding: 6px 8px;
         background-color: #222222;
         border: 2px solid var(--border-color);
         font-size: 21px;
-        min-height: 38px; /* 保留最小高度 */
-        height: auto; /* 改為 auto 以適應多行內容 */
-        max-height: 76px; /* 最大高度設為兩行高度 */
-        overflow-y: auto; /* 允許垂直滾動 */
+        min-height: 38px;
+        height: auto;
+        max-height: 76px;
+        overflow-y: auto;
         overflow-x: auto;
-        white-space: normal; /* 允許換行 */
-        word-wrap: break-word; /* 確保長單詞也能換行 */
+        white-space: normal;
+        word-wrap: break-word;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         font-family: monospace;
         box-sizing: border-box;
-        display: block; /* 改為 block 以便支持換行 */
-        text-align: right; /* 文字靠右對齊 */
-        line-height: 1.2; /* 設置行高 */
+        display: block;
+        text-align: right;
+        line-height: 1.2;
+        
+        /* 重要：移除所有動畫和過渡效果 */
+        transition: none;
+        animation: none;
+        transform: none !important;
+    }
+
+    /* 保留上方線條動畫 */
+    #financialResult::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--button-orange), transparent);
+        animation: timelineSlide 3s linear infinite;
     }
     
     .container, .keyboard-container {
