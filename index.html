@@ -993,17 +993,18 @@
     }
 
     .food-animation-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 150%; /* 進一步增加容器寬度 */
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: visible; /* 關鍵：允許內容溢出 */
+        margin-left: -25%; /* 調整位置確保在視窗中央 */
     }
 
     .food-text {
@@ -1012,23 +1013,26 @@
         font-weight: bold;
         color: var(--button-orange);
         font-size: 0;
-        text-shadow: 0 0 15px rgba(255, 156, 51, 0.8);
+        text-shadow: 0 0 25px rgba(255, 156, 51, 0.9); /* 增強文字陰影 */
         opacity: 0;
         transform: translateY(50px);
         transition: opacity 0.5s, transform 0.5s, font-size 0.5s;
+        text-align: center; /* 確保文字居中 */
+        width: 100%; /* 使用容器的全寬 */
+        left: 0; /* 重置左偏移 */
     }
 
     .food-text.show {
         opacity: 1;
         transform: translateY(0);
-        font-size: 90px; /* 增加字體大小 */
-        animation: pulse 0.4s ease-in-out; /* 加快動畫時間 */
+        font-size: 300px; /* 再增加字體大小 */
+        animation: pulse 0.5s ease-in-out;
     }
 
     @keyframes pulse {
-        0% { transform: scale(0.8); opacity: 0; }
-        50% { transform: scale(3); opacity: 1; } /* 增加放大效果 */
-        100% { transform: scale(1); opacity: 1; }
+        0% { transform: scale(0.5); opacity: 0; }
+        50% { transform: scale(3.0); opacity: 1; } /* 調整放大效果 */
+        100% { transform: scale(1.0); opacity: 1; }
     }
 
     .food-text.hide {
@@ -2444,67 +2448,69 @@
 
         // 顯示食物動畫
         function showFoodAnimation() {
-        // 如果正在播放動畫，直接返回
-        if (animationInProgress) return;
-        
-        // 設置動畫進行中標記
-        animationInProgress = true;
-        
-        // 創建動畫容器
-        const container = document.createElement('div');
-        container.className = 'food-animation-container';
-        document.body.appendChild(container);
-        
-        // 觸覺反饋 - 長震動
-        if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(100);
-        }
-        
-        // 依序顯示文字
-        let index = 0;
-        const showNextText = () => {
-            if (index >= foodTexts.length) {
-                // 動畫結束，移除容器
-                setTimeout(() => {
-                    document.body.removeChild(container);
-                    animationInProgress = false;
-                }, 200); // 從300ms減少到200ms
-                return;
-            }
+            // 如果正在播放動畫，直接返回
+            if (animationInProgress) return;
             
-            // 創建文字元素
-            const textElement = document.createElement('div');
-            textElement.className = 'food-text';
-            textElement.textContent = foodTexts[index];
-            container.appendChild(textElement);
+            // 設置動畫進行中標記
+            animationInProgress = true;
             
-            // 觸發震動
+            // 創建動畫容器
+            const container = document.createElement('div');
+            container.className = 'food-animation-container';
+            document.body.appendChild(container);
+            
+            // 觸覺反饋 - 長震動
             if (window.navigator && window.navigator.vibrate) {
-                window.navigator.vibrate(50);
+                window.navigator.vibrate(100);
             }
             
-            // 顯示動畫 - 加快速度
-            setTimeout(() => {
-                textElement.classList.add('show');
-                
-                // 淡出動畫 - 加快速度
-                setTimeout(() => {
-                    textElement.classList.add('hide');
-                    textElement.classList.remove('show');
-                    
-                    // 移除元素 - 加快速度
+            // 依序顯示文字
+            let index = 0;
+            const showNextText = () => {
+                if (index >= foodTexts.length) {
+                    // 動畫結束，移除容器
                     setTimeout(() => {
-                        container.removeChild(textElement);
-                        index++;
-                        showNextText();
-                    }, 200); // 從300ms減少到200ms
-                }, 500); // 從800ms減少到500ms
-            }, 30); // 從50ms減少到30ms
-        };
-        
-        // 開始動畫
-        showNextText();
-    }
+                        document.body.removeChild(container);
+                        animationInProgress = false;
+                    }, 200); 
+                    return;
+                }
+                
+                // 創建文字元素
+                const textElement = document.createElement('div');
+                textElement.className = 'food-text';
+                textElement.textContent = foodTexts[index];
+                container.appendChild(textElement);
+                
+                // 觸發震動
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(50);
+                }
+                
+                // 顯示動畫
+                setTimeout(() => {
+                    textElement.classList.add('show');
+                    
+                    // 淡出動畫
+                    setTimeout(() => {
+                        textElement.classList.add('hide');
+                        textElement.classList.remove('show');
+                        
+                        // 移除元素
+                        setTimeout(() => {
+                            if (textElement.parentNode === container) {
+                                container.removeChild(textElement);
+                            }
+                            index++;
+                            showNextText();
+                        }, 250);
+                    }, 500); 
+                }, 40);
+            };
+            
+            // 開始動畫
+            showNextText();
+        }
 
         // 在頁面載入時初始化計算機顯示
         document.addEventListener('DOMContentLoaded', function() {
